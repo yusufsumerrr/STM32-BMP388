@@ -63,13 +63,9 @@ We enable the I2C mode to activate the SDA and SCL pins.
 ### 🛠️ `How It Works?`
 
 The bmp388_interface_init function serves as the primary communication bridge between the Bosch Sensortec API and the STM32 hardware. Its key responsibilities include:
-- Protocol Selection: Defines whether I2C or SPI will be used for physical data transmission.
-- Address Mapping: Assigns the sensor's physical I2C address (default 0x76) to ensure correct data routing.
-- Function Pointer Registration: Since the Bosch library is platform-independent, it relies on pointers to execute hardware-specific tasks. We map these pointers to our custom STM32 routines:
-
-  	1. bmp388_I2C_Read: Handles data acquisition.
-	2. bmp388_I2C_Write: Manages register configuration.
-	3. bmp388_delay_us: Provides precise timing for internal sensor operations.
+- *Protocol Selection:* Defines whether I2C or SPI will be used for physical data transmission.
+- *Address Mapping:* Assigns the sensor's physical I2C address (default 0x76) to ensure correct data routing.
+- *Function Pointer Registration:* Since the Bosch library is platform-independent, it does not have inherent knowledge of how to physically read or write data. Instead, it provides a flexible structure that holds the memory addresses (pointers) of the functions that will perform these tasks. By assigning the addresses of our custom-written ``bmp388_I2C_Read``, ``bmp388_I2C_Write``, and ``bmp388_delay_us`` functions to these pointers within the API, we establish the vital link between the hardware and the software.
 
 ```c
 int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
@@ -93,8 +89,6 @@ int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
 	return rslt;
 }
 ```
-
-This function acts as a "handshake" or bridge between the Bosch API and the STM32 hardware. It begins with a safety check to ensure the sensor structure is properly allocated in memory. Once verified, it configures the communication protocol as I2C and assigns the hardware address (typically 0x76). The most critical part of this block is the function pointer mapping at the end. This tells the Bosch library to use specific STM32-based routines whenever it needs to perform a read, write, or delay operation. This approach maintains a modular design, allowing the high-level library to interact with the microcontroller without needing to handle low-level hardware details directly.
 
 
 
