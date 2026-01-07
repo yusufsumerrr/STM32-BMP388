@@ -5,7 +5,15 @@ This project is a firmware implementation for integrating the BMP388 high-precis
 
 ![20260106_172047_1 (2)](https://github.com/user-attachments/assets/ac80d752-c297-47d5-88b4-f80e70260a22)
 
-### `BMP388 Barometric Pressure & Temperature Sensor`
+### `BMP388 - Barometric Pressure & Temperature Sensor`
 
-The BMP388 is a high-precision barometric pressure sensor developed by Bosch Sensortec. By measuring both atmospheric pressure and temperature within a single package, the sensor is specifically used for altitude estimation and embedded system applications. It can be easily integrated with STM32-based systems via `$I^2C$` and `$SPI$` interfaces.
+The BMP388 is a high-precision, low-power digital barometric pressure sensor. It measures both atmospheric pressure and ambient temperature, enabling accurate altitude tracking and environmental monitoring. It can be easily integrated with STM32-based systems via $I^2C$ and $SPI$ interfaces.
+
+1. `Pressure Sensor`(Pa / hPa)
+   - Measures absolute atmospheric pressure.
+   - 
+Calculates altitude based on pressure changes (barometric altimeter principle).
+High absolute accuracy and low long-term drift.
+Adjustable output data rate (ODR) and filtering.
+Operating range: 300 hPa to 1250 hPa.
 
