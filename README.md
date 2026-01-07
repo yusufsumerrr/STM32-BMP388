@@ -11,13 +11,16 @@ This project is a firmware implementation for integrating the BMP388 high-precis
 
 The BMP388 is a high-precision, low-power digital barometric pressure sensor. It measures both atmospheric pressure and ambient temperature, enabling accurate altitude tracking and environmental monitoring. It can be easily integrated with STM32-based systems via $I^2C$ and $SPI$ interfaces.
 
-1. `Pressure Sensor`(Pa / hPa)
+1. `Pressure Sensor`($Pa / hPa$)
+
    - Measures absolute atmospheric pressure.
    - Calculates altitude based on pressure changes (barometric altimeter principle).
    - High absolute accuracy and low long-term drift.
    - Adjustable output data rate (ODR) and filtering.
    - Operating range: 300 hPa to 1250 hPa.
-2. `Temperature Sensor`(°C)
+  
+3. `Temperature Sensor`($°C$)
+
    - Measures ambient temperature.
    - Primarily used for temperature compensation of the pressure sensor to ensure high accuracy.
    - Can also be used for basic ambient temperature monitoring.
