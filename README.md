@@ -32,7 +32,7 @@ The BMP388 is a high-precision, low-power digital barometric pressure sensor. It
 
 The BMP388 digital barometric pressure sensor features a hybrid interface architecture that supports both `I²C` (Inter-Integrated Circuit) and `SPI` (Serial Peripheral Interface) communication protocols to provide flexible system integration.
 
-1. #### I²C Communication Mode
+1. #### `I²C Communication Mode`
    - `VCC & GND:` Power supply and ground reference lines for the sensor.
    - `SCL (Serial Clock):` Clock signal line.
    - `SDA (Serial Data):` Bidirectional data transmission line.
@@ -44,6 +44,20 @@ The BMP388 digital barometric pressure sensor features a hybrid interface archit
    - `SCK (Serial Clock):` SPI clock signal line.
    - `SDI (Serial Data In):` Data input from the master device to the sensor (MOSI).
    - `SDO (Serial Data Out):` Data output from the sensor to the master device (MISO).
+
+---
+
+### `STM32CubeIDE Configuration`
+We enable the I2C mode to activate the SDA and SCL pins.
+
+<img width="1285" height="599" alt="image" src="https://github.com/user-attachments/assets/04bfaf90-dbd8-4670-b4b1-ffc86ac39298" />
+
+- BMP388_VCC -> NucleoBoard_3.3V
+- BMP388_GND -> NucleoBoard_GND
+- BMP388_SCL -> PA9  -> I2C2_SCL  
+- BMP388_SDA -> PA10 -> I2C2_SDA 
+
+---
 
 
 
