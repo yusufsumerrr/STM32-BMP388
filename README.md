@@ -54,11 +54,44 @@ We enable the I2C mode to activate the SDA and SCL pins.
 
 - BMP388_VCC -> NucleoBoard_3.3V
 - BMP388_GND -> NucleoBoard_GND
-- BMP388_SCL -> PA9  -> I2C2_SCL  
+- BMP388_SCL ->  PA9 -> I2C2_SCL  
 - BMP388_SDA -> PA10 -> I2C2_SDA 
 
 ---
 
+### 🛠️ `How It Works?`
+
+```c
+struct bmp3_dev dev;
+```
+
+```c
+int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
+
+	int8_t rslt = BMP3_OK;    				// BMP3_OK = INT8_C(0)
+
+	if(bmp3 != NULL){		 				// If the bmp3 structure is actually present in memory (if it is not empty)
+
+		/* Bus configuration : I2C */
+		if(intf == BMP3_I2C_INTF){			// BMP3_I2C_INTF = 1
+
+			dev_addr = BMP3_ADDR_I2C_PRIM;  // if SDO pin = LOW, dev_addr = UINT8_C(0x76)
+											// if SDO pin = HIGH, dev_addr = UINT8_C(0x77)
+			bmp3->intf_ptr = &dev_addr;
+			bmp3->intf = BMP3_I2C_INTF;
+			bmp3->read = bmp388_I2C_Read;
+			bmp3->write = bmp388_I2C_Write;
+			bmp3->delay_us = bmp388_delay_us;
+		}
+	}
+	else{rslt = BMP3_E_NULL_PTR;}
+
+	return rslt;
+}
+
+```
+
+This function acts as a "handshake" or bridge between the Bosch API and the STM32 hardware. It begins with a safety check to ensure the sensor structure is properly allocated in memory. Once verified, it configures the communication protocol as I2C and assigns the hardware address (typically 0x76). The most critical part of this block is the function pointer mapping at the end. This tells the Bosch library to use specific STM32-based routines whenever it needs to perform a read, write, or delay operation. This approach maintains a modular design, allowing the high-level library to interact with the microcontroller without needing to handle low-level hardware details directly.
 
 
 
