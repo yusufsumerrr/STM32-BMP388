@@ -143,8 +143,9 @@ The ``BMP388_Read`` function acts as the “heartbeat” of the system; it acqui
 -	``Unit Conversion:`` The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa)
 $$1hPa=100Pa$$
 -	``Barometric Altitude Formula:`` The most critical part of the function is the calculation of altitude above sea level using the pressure difference. The following International Standard Atmosphere (ISA) equation is applied:
+
 $$
-h = 44330 \times \left[ 1 - \left(\frac{P}{P_0}\right)^{0.1903} \right]
+h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
 
 ```c
