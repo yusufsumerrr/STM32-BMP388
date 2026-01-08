@@ -152,10 +152,10 @@ $$
 h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
 
-where:
+Where:
+	-	$P$ is the measured ambient pressure,	
+	-	$P_0$ is the sea-level reference pressure.
 
-	-	$P$ is the measured ambient pressure,
-	-	$P_0$ is the sea-level reference pressure (standard value: 1013.25 hPa).
 
 -	``Data Structuring:`` All computed values (pressure, temperature, and altitude) are stored in a dedicated data structure (DataStruct) to allow easy and efficient access by other parts of the project.
 
