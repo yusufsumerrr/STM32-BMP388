@@ -154,7 +154,7 @@ $$
 
 where:
 	-	$P$ is the measured ambient pressure,
-	-	$\P_0$ is the sea-level reference pressure (standard value: 1013.25 hPa).
+	-	$P_0$ is the sea-level reference pressure (standard value: 1013.25 hPa).
 
 -	``Data Structuring:`` All computed values (pressure, temperature, and altitude) are stored in a dedicated data structure (DataStruct) to allow easy and efficient access by other parts of the project.
 
