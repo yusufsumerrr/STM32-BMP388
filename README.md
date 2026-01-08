@@ -7,11 +7,11 @@ This project is a firmware implementation for integrating the BMP388 high-precis
 
 ---
 
-### `BMP388 - Barometric Pressure & Temperature Sensor`
+### **`BMP388 - Barometric Pressure & Temperature Sensor`**
 
 The BMP388 is a high-precision, low-power digital barometric pressure sensor. It measures both atmospheric pressure and ambient temperature, enabling accurate altitude tracking and environmental monitoring. It can be easily integrated with STM32-based systems via $I^2C$ and $SPI$ interfaces.
 
-1. `Pressure Sensor`($Pa / hPa$)
+1. **``Pressure Sensor``**($Pa / hPa$)
 
    - Measures absolute atmospheric pressure.
    - Calculates altitude based on pressure changes (barometric altimeter principle).
@@ -19,7 +19,7 @@ The BMP388 is a high-precision, low-power digital barometric pressure sensor. It
    - Adjustable output data rate (ODR) and filtering.
    - Operating range: 300 hPa to 1250 hPa.
   
-3. `Temperature Sensor`($°C$)
+3. **``Temperature Sensor``**($°C$)
 
    - Measures ambient temperature.
    - Primarily used for temperature compensation of the pressure sensor to ensure high accuracy.
@@ -30,20 +30,20 @@ The BMP388 is a high-precision, low-power digital barometric pressure sensor. It
 
 ![bmp388-digital-pressure-sensor-breakout-41745-11-O](https://github.com/user-attachments/assets/f07a884e-e08b-41e1-a982-a6cfe9923809)
 
-The BMP388 digital barometric pressure sensor features a hybrid interface architecture that supports both `I²C` (Inter-Integrated Circuit) and `SPI` (Serial Peripheral Interface) communication protocols to provide flexible system integration.
+The BMP388 digital barometric pressure sensor features a hybrid interface architecture that supports both **``I²C``** (Inter-Integrated Circuit) and **``SPI``** (Serial Peripheral Interface) communication protocols to provide flexible system integration.
 
 1. #### `I²C Communication Mode`
-   - `VCC & GND:` Power supply and ground reference lines for the sensor.
-   - `SCL (Serial Clock):` Clock signal line.
-   - `SDA (Serial Data):` Bidirectional data transmission line.
-   - `SDO:` Used to define the I²C device address (Logic 0 or 1).
+   - **``VCC & GND:``** Power supply and ground reference lines for the sensor.
+   - **``SCL (Serial Clock):``** Clock signal line.
+   - **``SDA (Serial Data):``** Bidirectional data transmission line.
+   - **``SDO:``** Used to define the I²C device address (Logic 0 or 1).
 
 2. #### `SPI Communication Mode`
-   - `VCC & GND:` Power supply and ground reference lines for the sensor.
-   - `CS (Chip Select):` Used by the microcontroller to select the sensor and activate SPI mode.
-   - `SCK (Serial Clock):` SPI clock signal line.
-   - `SDI (Serial Data In):` Data input from the master device to the sensor (MOSI).
-   - `SDO (Serial Data Out):` Data output from the sensor to the master device (MISO).
+   - **``VCC & GND:``** Power supply and ground reference lines for the sensor.
+   - **``CS (Chip Select):``** Used by the microcontroller to select the sensor and activate SPI mode.
+   - **``SCK (Serial Clock):``** SPI clock signal line.
+   - **``SDI (Serial Data In):``** Data input from the master device to the sensor (MOSI).
+   - **``SDO (Serial Data Out):``** Data output from the sensor to the master device (MISO).
 
 ---
 
@@ -62,10 +62,10 @@ We enable the I2C mode to activate the SDA and SCL pins.
 
 ### 🛠️ `How It Works?`
 
-The ``bmp388_interface_init`` function serves as the primary communication bridge between the Bosch Sensortec API and the STM32 hardware. Its key responsibilities include:
-- ``Protocol Selection:`` Defines whether I2C or SPI will be used for physical data transmission.
-- ``Address Mapping:`` Assigns the sensor's physical I2C address (default 0x76) to ensure correct data routing.
-- ``Function Pointer Registration:`` Since the Bosch library is platform-independent, it does not have inherent knowledge of how to physically read or write data. Instead, it provides a flexible structure that holds the memory addresses (pointers) of the functions that will perform these tasks. By assigning the addresses of our custom-written ``bmp388_I2C_Read``, ``bmp388_I2C_Write``, and ``bmp388_delay_us`` functions to these pointers within the API, we establish the vital link between the hardware and the software.
+The **``bmp388_interface_init``** function serves as the primary communication bridge between the Bosch Sensortec API and the STM32 hardware. Its key responsibilities include:
+- **``Protocol Selection:``** Defines whether I2C or SPI will be used for physical data transmission.
+- **``Address Mapping:``** Assigns the sensor's physical I2C address (default 0x76) to ensure correct data routing.
+- **``Function Pointer Registration:``** Since the Bosch library is platform-independent, it does not have inherent knowledge of how to physically read or write data. Instead, it provides a flexible structure that holds the memory addresses (pointers) of the functions that will perform these tasks. By assigning the addresses of our custom-written **``bmp388_I2C_Read``**, **``bmp388_I2C_Write``**, and **``bmp388_delay_us``** functions to these pointers within the API, we establish the vital link between the hardware and the software.
 
 ```c
 int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
@@ -92,15 +92,15 @@ int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
 
 ---
 
-The ``BMP388_init`` function not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
+The **``BMP388_init``** function not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
 
--	``Hardware and API Integration:`` The previously implemented communication interface (I2C) is activated, and the basic communication between the sensor and the Bosch API is initialized, including operations such as Chip ID verification.
--	``Power Mode Selection (Power Control):`` The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
--	``Sampling and Noise Management (Oversampling & Filtering):``
-	-	``Pressure Oversampling (8×):`` Since pressure measurements are highly sensitive to noise, eight samples are acquired per measurement cycle and internally averaged. This approach is essential for achieving high-precision altitude estimation.
-	-	``IIR Filtering:`` A low-pass Infinite Impulse Response (IIR) filter is applied to suppress sudden fluctuations in the measurement results, such as those caused by airflow due to device motion.
--	``Output Data Rate (ODR – 50 Hz):`` The sensor is configured to generate new data at a rate of 50 samples per second, providing an optimal balance for real-time telemetry and altitude tracking applications.
--	``Data Ready Interrupt:`` Instead of continuously polling the sensor to check for new data, the sensor is configured to interrupt the microcontroller (STM32) when data becomes available. This significantly improves CPU efficiency and power management.
+-	**``Hardware and API Integration:``** The previously implemented communication interface (I2C) is activated, and the basic communication between the sensor and the Bosch API is initialized, including operations such as Chip ID verification.
+-	**``Power Mode Selection (Power Control):``** The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
+-	**``Sampling and Noise Management (Oversampling & Filtering):``**
+	-	**``Pressure Oversampling (8×):``** Since pressure measurements are highly sensitive to noise, eight samples are acquired per measurement cycle and internally averaged. This approach is essential for achieving high-precision altitude estimation.
+	-	**``IIR Filtering:``** A low-pass Infinite Impulse Response (IIR) filter is applied to suppress sudden fluctuations in the measurement results, such as those caused by airflow due to device motion.
+-	**``Output Data Rate (ODR – 50 Hz):``** The sensor is configured to generate new data at a rate of 50 samples per second, providing an optimal balance for real-time telemetry and altitude tracking applications.
+-	**``Data Ready Interrupt:``** Instead of continuously polling the sensor to check for new data, the sensor is configured to interrupt the microcontroller (STM32) when data becomes available. This significantly improves CPU efficiency and power management.
 
 ```c
 void BMP388_init(){
@@ -136,25 +136,25 @@ void BMP388_init(){
 
 ---
 
-The ``BMP388_Read`` function acts as the “heartbeat” of the system; it acquires raw data from the sensor, validates it, and converts it into meaningful telemetry information such as pressure, temperature, and altitude. The operation of this function consists of the following stages:
+The **``BMP388_Read``** function acts as the “heartbeat” of the system; it acquires raw data from the sensor, validates it, and converts it into meaningful telemetry information such as pressure, temperature, and altitude. The operation of this function consists of the following stages:
 
--	``Data Integrity Check (Status Check):`` Before reading data from the sensor, the Data Ready (DRDY) flag is checked using the bmp3_get_status function. This prevents the microcontroller from reading unprocessed or invalid data, thereby preserving data integrity.
--	``Sensor Data Acquisition:`` Once the DRDY flag is confirmed, pressure and temperature values are read simultaneously via the Bosch API. After the read operation, the status register is checked again to clear the interrupt flags, ensuring that the sensor is ready for the next measurement cycle.
--	``Unit Conversion:`` The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa).
+-	**``Data Integrity Check (Status Check):``** Before reading data from the sensor, the Data Ready (DRDY) flag is checked using the bmp3_get_status function. This prevents the microcontroller from reading unprocessed or invalid data, thereby preserving data integrity.
+-	**``Sensor Data Acquisition:``** Once the DRDY flag is confirmed, pressure and temperature values are read simultaneously via the Bosch API. After the read operation, the status register is checked again to clear the interrupt flags, ensuring that the sensor is ready for the next measurement cycle.
+-	**``Unit Conversion:``** The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa).
 
 $$
 1hPa=100Pa
 $$
 
--	``Barometric Altitude Formula:`` The most critical part of the function is the calculation of altitude above sea level using the pressure difference. The following International Standard Atmosphere (ISA) equation is applied:
+-	**``Barometric Altitude Formula:``** The most critical part of the function is the calculation of altitude above sea level using the pressure difference. The following International Standard Atmosphere (ISA) equation is applied:
 
 $$
 h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
 
 **Where:**
-		1.	 **$P$**: The measured ambient atmospheric pressure (hPa).
-		2.	 **$P_0$**: The sea-level reference pressure (typically $1013.25$ hPa or the current local QNH setting).
+1.	 **$P$**: The measured ambient atmospheric pressure (hPa).
+2.	 **$P_0$**: The sea-level reference pressure (typically $1013.25$ hPa or the current local QNH setting).
 
 -	**``Data Structuring:``** All computed values (pressure, temperature, and altitude) are stored in a dedicated data structure (DataStruct) to allow easy and efficient access by other parts of the project.
 
