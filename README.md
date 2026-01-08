@@ -223,6 +223,7 @@ while (1)
 	pressure = BMP388.Pressure;
 	temperature = BMP388.Temperature;
 	baroAltitude = BMP388.Altitude;
+	printf("Pressure: %.2f Temperature: %.2f BaroAltitude: %.2f \r\n", pressure, temperature, baroAltitude);
 }
 
 ```
