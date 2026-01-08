@@ -92,7 +92,7 @@ int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
 
 ---
 
-The ``BMP388_init function`` not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
+The ``BMP388_init`` function not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
 
 -	``Hardware and API Integration:`` The previously implemented communication interface (I2C) is activated, and the basic communication between the sensor and the Bosch API is initialized, including operations such as Chip ID verification.
 -	``Power Mode Selection (Power Control):`` The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
@@ -101,5 +101,92 @@ The ``BMP388_init function`` not only ensures that the sensor operates correctly
 	-	``IIR Filtering:`` A low-pass Infinite Impulse Response (IIR) filter is applied to suppress sudden fluctuations in the measurement results, such as those caused by airflow due to device motion.
 -	``Output Data Rate (ODR – 50 Hz):`` The sensor is configured to generate new data at a rate of 50 samples per second, providing an optimal balance for real-time telemetry and altitude tracking applications.
 -	``Data Ready Interrupt:`` Instead of continuously polling the sensor to check for new data, the sensor is configured to interrupt the microcontroller (STM32) when data becomes available. This significantly improves CPU efficiency and power management.
+
+```c
+void BMP388_init(){
+    rslt = bmp388_interface_init(&dev, BMP3_I2C_INTF);
+    rslt = bmp3_init(&dev);
+
+    // Register 0x1B "PWR_CTRL"
+    settings.op_mode = BMP3_MODE_NORMAL;
+    settings.press_en = BMP3_ENABLE;
+    settings.temp_en = BMP3_ENABLE;
+
+    // Register 0x1C "OSR"
+    settings.odr_filter.press_os = BMP3_OVERSAMPLING_8X;
+    settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
+
+    // Register 0x1F "CONFIG"
+    settings.odr_filter.iir_filter = BMP3_IIR_FILTER_COEFF_3;
+
+    // Register 0x1D "ODR"
+    settings.odr_filter.odr = BMP3_ODR_50_HZ;
+
+    // Data Ready Interrupt
+    settings.int_settings.drdy_en = BMP3_ENABLE;
+
+    // Configure sensor settings: pressure, temperature, data ready flag, oversampling and ODR
+    settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_DRDY_EN | BMP3_SEL_PRESS_OS |
+    		BMP3_SEL_TEMP_OS | BMP3_SEL_ODR;
+
+    rslt = bmp3_set_sensor_settings(settings_sel, &settings, &dev);
+    rslt = bmp3_set_op_mode(&settings, &dev);
+}
+```
+
+---
+
+The ``BMP388_Read`` function acts as the “heartbeat” of the system; it acquires raw data from the sensor, validates it, and converts it into meaningful telemetry information such as pressure, temperature, and altitude. The operation of this function consists of the following stages:
+
+-	``Data Integrity Check (Status Check):`` Before reading data from the sensor, the Data Ready (DRDY) flag is checked using the bmp3_get_status function. This prevents the microcontroller from reading unprocessed or invalid data, thereby preserving data integrity.
+-	``Sensor Data Acquisition:`` Once the DRDY flag is confirmed, pressure and temperature values are read simultaneously via the Bosch API. After the read operation, the status register is checked again to clear the interrupt flags, ensuring that the sensor is ready for the next measurement cycle.
+-	``Unit Conversion:`` The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa)
+$$1hPa=100Pa$$
+-	``Barometric Altitude Formula:`` The most critical part of the function is the calculation of altitude above sea level using the pressure difference. The following International Standard Atmosphere (ISA) equation is applied:
+$$
+h = 44330 \times \left[ 1 - \left(\frac{P}{P_0}\right)^{0.1903} \right]
+$$
+
+```c
+void BMP388_Read(BMP388_t *DataStruct){
+
+	/* Retrieve device operational and interrupt status to verify data integrity */
+	rslt = bmp3_get_status(&status, &dev);
+
+	/* Execute data acquisition only if the Data Ready (DRDY) flag is asserted */
+	if ((rslt == BMP3_OK) && (status.intr.drdy == BMP3_ENABLE)){
+
+	    /*
+	        * First parameter indicates the type of data to be read
+	     	* BMP3_PRESS   : To read only pressure data
+	     	* BMP3_TEMP    : To read only temperature data
+	        * BMP3_PRESS_TEMP : To read pressure and temperature data
+	    */
+	    rslt = bmp3_get_sensor_data(BMP3_PRESS_TEMP, &data, &dev);
+
+	    /* Re-access the status register to acknowledge and clear the pending interrupt service routine (ISR) flags.*/
+	    rslt = bmp3_get_status(&status, &dev);
+
+	    // Get pressure and temperature
+	    float pressure = data.pressure;
+	    float temperature = data.temperature;
+
+	    float atmospheric = pressure / 100.0f;  // Pa to hPa
+
+	    /*
+	     	 * Calculate altitude
+	     	 * h = 44330 × [1 - (P/P₀)^0.1903]
+	     	 * P: The current ambient atmospheric pressure at your specific location.
+	     	 * P_0 (SEALEVELPRESSURE_HPA): The reference pressure at mean sea level (MSL),
+	     	 either as a standard value or the current local altimeter setting (QNH).
+	    */
+	    float altitude = 44330.0 * (1.0 - pow(atmospheric / SEALEVELPRESSURE_HPA, 0.1903));
+
+	    DataStruct->Pressure = pressure;
+	    DataStruct->Temperature = temperature;
+	    DataStruct->Altitude = altitude;
+	}
+}
+```
 
 
