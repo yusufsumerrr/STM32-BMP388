@@ -140,13 +140,23 @@ The ``BMP388_Read`` function acts as the “heartbeat” of the system; it acqui
 
 -	``Data Integrity Check (Status Check):`` Before reading data from the sensor, the Data Ready (DRDY) flag is checked using the bmp3_get_status function. This prevents the microcontroller from reading unprocessed or invalid data, thereby preserving data integrity.
 -	``Sensor Data Acquisition:`` Once the DRDY flag is confirmed, pressure and temperature values are read simultaneously via the Bosch API. After the read operation, the status register is checked again to clear the interrupt flags, ensuring that the sensor is ready for the next measurement cycle.
--	``Unit Conversion:`` The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa)
-$$1hPa=100Pa$$
+-	``Unit Conversion:`` The raw pressure data obtained from the sensor is provided in Pascals (Pa). To comply with meteorological standards and the altitude calculation formula, this value is converted to hectopascals (hPa).
+
+$$
+1hPa=100Pa
+$$
+
 -	``Barometric Altitude Formula:`` The most critical part of the function is the calculation of altitude above sea level using the pressure difference. The following International Standard Atmosphere (ISA) equation is applied:
 
 $$
 h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
+
+where:
+	-	$P$ is the measured ambient pressure,
+	-	$\P_0$ is the sea-level reference pressure (standard value: 1013.25 hPa).
+
+-	``Data Structuring:`` All computed values (pressure, temperature, and altitude) are stored in a dedicated data structure (DataStruct) to allow easy and efficient access by other parts of the project.
 
 ```c
 void BMP388_Read(BMP388_t *DataStruct){
