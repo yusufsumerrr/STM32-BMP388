@@ -97,16 +97,9 @@ The ``BMP388_init function`` not only ensures that the sensor operates correctly
 -	Hardware and API Integration: The previously implemented communication interface (I2C) is activated, and the basic communication between the sensor and the Bosch API is initialized, including operations such as Chip ID verification.
 -	Power Mode Selection (Power Control): The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
 -	Sampling and Noise Management (Oversampling & Filtering):
--		Pressure Oversampling (8×):
-Since pressure measurements are highly sensitive to noise, eight samples are acquired per measurement cycle and internally averaged. This approach is essential for achieving high-precision altitude estimation.
-
-IIR Filtering:
-A low-pass Infinite Impulse Response (IIR) filter is applied to suppress sudden fluctuations in the measurement results, such as those caused by airflow due to device motion.
-
-Output Data Rate (ODR – 50 Hz):
-The sensor is configured to generate new data at a rate of 50 samples per second, providing an optimal balance for real-time telemetry and altitude tracking applications.
-
-Data Ready Interrupt:
-Instead of continuously polling the sensor to check for new data, the sensor is configured to interrupt the microcontroller (STM32) when data becomes available. This significantly improves CPU efficiency and power management.
+	-	Pressure Oversampling (8×): Since pressure measurements are highly sensitive to noise, eight samples are acquired per measurement cycle and internally averaged. This approach is essential for achieving high-precision altitude estimation.
+	-	IIR Filtering: A low-pass Infinite Impulse Response (IIR) filter is applied to suppress sudden fluctuations in the measurement results, such as those caused by airflow due to device motion.
+-	Output Data Rate (ODR – 50 Hz): The sensor is configured to generate new data at a rate of 50 samples per second, providing an optimal balance for real-time telemetry and altitude tracking applications.
+-	Data Ready Interrupt: Instead of continuously polling the sensor to check for new data, the sensor is configured to interrupt the microcontroller (STM32) when data becomes available. This significantly improves CPU efficiency and power management.
 
 
