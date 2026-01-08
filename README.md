@@ -95,13 +95,9 @@ int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
 The ``BMP388_init function`` not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
 
 -	Hardware and API Integration: The previously implemented communication interface (I2C) is activated, and the basic communication between the sensor and the Bosch API is initialized, including operations such as Chip ID verification.
-
-Power Mode Selection (Power Control):
-The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
-
-Sampling and Noise Management (Oversampling & Filtering):
-
-Pressure Oversampling (8×):
+-	Power Mode Selection (Power Control): The sensor is configured to operate in Normal Mode, enabling continuous measurements. Both the pressure and temperature sensing units are activated simultaneously.
+-	Sampling and Noise Management (Oversampling & Filtering):
+-		Pressure Oversampling (8×):
 Since pressure measurements are highly sensitive to noise, eight samples are acquired per measurement cycle and internally averaged. This approach is essential for achieving high-precision altitude estimation.
 
 IIR Filtering:
