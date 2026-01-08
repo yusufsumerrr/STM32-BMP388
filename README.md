@@ -231,7 +231,7 @@ void BMP388_Read(BMP388_t *DataStruct){
 
 ---
 
--	**``BMP388_t Structure:``** It is used to collect and manage related data such as pressure, temperature, and altitude under a single structure. This approach enables organized and collective access to the sensor data.
+-	**``BMP388_t Struct:``** It is used to collect and manage related data such as pressure, temperature, and altitude under a single structure. This approach enables organized and collective access to the sensor data.
 -	**``BMP388_Read Function:``** It runs inside the main loop and updates the raw data received from the sensor in each iteration. This ensures continuous and real-time data acquisition, allowing the system to maintain an uninterrupted data flow.
 
 ```c
