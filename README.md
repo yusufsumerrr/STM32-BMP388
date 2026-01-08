@@ -7,7 +7,7 @@ This project is a firmware implementation for integrating the BMP388 high-precis
 
 ---
 
-### **`BMP388 - Barometric Pressure & Temperature Sensor`**
+### **``BMP388 - Barometric Pressure & Temperature Sensor``**
 
 The BMP388 is a high-precision, low-power digital barometric pressure sensor. It measures both atmospheric pressure and ambient temperature, enabling accurate altitude tracking and environmental monitoring. It can be easily integrated with STM32-based systems via $I^2C$ and $SPI$ interfaces.
 
@@ -26,7 +26,7 @@ The BMP388 is a high-precision, low-power digital barometric pressure sensor. It
   
 ---
 
-### `BMP388 Pins`
+### **``BMP388 Pins``**
 
 ![bmp388-digital-pressure-sensor-breakout-41745-11-O](https://github.com/user-attachments/assets/f07a884e-e08b-41e1-a982-a6cfe9923809)
 
@@ -47,7 +47,7 @@ The BMP388 digital barometric pressure sensor features a hybrid interface archit
 
 ---
 
-### `STM32CubeIDE Configuration`
+### **``STM32CubeIDE Configuration``**
 We enable the I2C mode to activate the SDA and SCL pins.
 
 <img width="1285" height="599" alt="image" src="https://github.com/user-attachments/assets/04bfaf90-dbd8-4670-b4b1-ffc86ac39298" />
@@ -60,7 +60,7 @@ We enable the I2C mode to activate the SDA and SCL pins.
 
 ---
 
-### 🛠️ `How It Works?`
+### 🛠️ **``How It Works?``**
 
 The **``bmp388_interface_init``** function serves as the primary communication bridge between the Bosch Sensortec API and the STM32 hardware. Its key responsibilities include:
 - **``Protocol Selection:``** Defines whether I2C or SPI will be used for physical data transmission.
@@ -207,9 +207,11 @@ void BMP388_Read(BMP388_t *DataStruct){
 
 ```c
 typedef struct {
+
 	float Pressure;
 	float Temperature;
 	float Altitude;
+
 } BMP388_t;
 
 BMP388_t BMP388;
@@ -217,10 +219,10 @@ float temperature, pressure, baroAltitude;
 
 while (1)
 {
-BMP388_Read(&BMP388);
-pressure = BMP388.Pressure;
-temperature = BMP388.Temperature;
-baroAltitude = BMP388.Altitude;
+	BMP388_Read(&BMP388);
+	pressure = BMP388.Pressure;
+	temperature = BMP388.Temperature;
+	baroAltitude = BMP388.Altitude;
 }
 
 ```
