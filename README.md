@@ -200,4 +200,21 @@ void BMP388_Read(BMP388_t *DataStruct){
 }
 ```
 
+---
+
+```c
+/* USER CODE BEGIN PV */
+// Global instance of the sensor data structure
+BMP388_t BMP388;
+float temperature, pressure, baroAltitude;
+/* USER CODE END PV */
+
+BMP388_Read(&BMP388);
+pressure = BMP388.Pressure;
+temperature = BMP388.Temperature;
+baroAltitude = BMP388.Altitude;
+
+```
+
+
 
