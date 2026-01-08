@@ -1,6 +1,6 @@
 # STM32-BMP388
 
-This project is a firmware implementation for integrating the BMP388 high-precision barometric pressure sensor with an STM32 microcontroller. The system acquires real-time pressure and temperature data to derive accurate altitude estimations via the barometric formula.
+This project is a firmware implementation for integrating the BMP388 high-precision barometric pressure sensor with an STM32F302R8 Nucleo board. The system acquires real-time pressure and temperature data to derive accurate altitude estimations via the barometric formula.
 
 
 ![20260106_172047_1 (2)](https://github.com/user-attachments/assets/ac80d752-c297-47d5-88b4-f80e70260a22)
@@ -100,7 +100,6 @@ int8_t bmp388_I2C_Read(uint8_t reg_addr, uint8_t *read_data, uint32_t len, void 
 		return -2;  // BMP3_E_COMM_FAIL   INT8_C(-2)
 	}
 }
-
 
 int8_t bmp388_I2C_Write(uint8_t reg_addr, const uint8_t *read_data, uint32_t len, void *intf_ptr){
 
