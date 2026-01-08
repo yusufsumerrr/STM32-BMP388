@@ -90,6 +90,36 @@ int8_t bmp388_interface_init(struct bmp3_dev *bmp3, uint8_t intf){
 }
 ```
 
+```c
+int8_t bmp388_I2C_Read(uint8_t reg_addr, uint8_t *read_data, uint32_t len, void *intf_ptr){
+
+	uint8_t dev_addr = *(uint8_t *)intf_ptr;
+	if(HAL_I2C_Mem_Read(&I2C_HANDLE, (dev_addr << 1), reg_addr, I2C_MEMADD_SIZE_8BIT, read_data, len, BUS_TIMEOUT) == HAL_OK){
+		return 0;   // BMP3_OK            INT8_C(0)
+	} else{
+		return -2;  // BMP3_E_COMM_FAIL   INT8_C(-2)
+	}
+}
+
+
+int8_t bmp388_I2C_Write(uint8_t reg_addr, const uint8_t *read_data, uint32_t len, void *intf_ptr){
+
+	uint8_t dev_addr = *(uint8_t *)intf_ptr;
+	if(HAL_I2C_Mem_Write(&I2C_HANDLE, (dev_addr << 1), reg_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t *)read_data, len, BUS_TIMEOUT) == HAL_OK){
+		return 0;   // BMP3_OK            INT8_C(0)
+	} else{
+		return -2;  // BMP3_E_COMM_FAIL   INT8_C(-2)
+	}
+}
+
+/* Wait 2ms to reset */
+void bmp388_delay_us(uint32_t period, void *intf_ptr){
+
+	HAL_Delay(period / 1000);
+}
+
+```
+
 ---
 
 The **``BMP388_init``** function not only ensures that the sensor operates correctly but also defines how the sensor behaves according to the project requirements in terms of accuracy, sampling speed, and power consumption. This stage is the most critical part for ensuring data reliability and overall system stability. The main operations performed by this function are as follows:
