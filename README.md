@@ -153,6 +153,7 @@ h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
 
 where:
+
 	-	$P$ is the measured ambient pressure,
 	-	$P_0$ is the sea-level reference pressure (standard value: 1013.25 hPa).
 
