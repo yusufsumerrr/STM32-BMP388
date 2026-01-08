@@ -153,8 +153,8 @@ h = 44330 \cdot \left[ 1 - \left( \frac{P}{P_0} \right)^{0.1903} \right]
 $$
 
 **Where:**
-	* **$P$**: The measured ambient atmospheric pressure (hPa).
-	* **$P_0$**: The sea-level reference pressure (typically $1013.25$ hPa or the current local QNH setting).
+		1.	 **$P$**: The measured ambient atmospheric pressure (hPa).
+		2.	 **$P_0$**: The sea-level reference pressure (typically $1013.25$ hPa or the current local QNH setting).
 
 -	**``Data Structuring:``** All computed values (pressure, temperature, and altitude) are stored in a dedicated data structure (DataStruct) to allow easy and efficient access by other parts of the project.
 
